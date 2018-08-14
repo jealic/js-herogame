@@ -76,5 +76,51 @@ class Monster extends BaseCharacter {
   }
 }
 
+var rounds = 10;
+function endTurn() {
+  rounds--;
+  document.getElementById("round-num").textContent = rounds;
+  if (rounds < 1) {
+    // 遊戲結束
+  }
+}
 var monster = new Monster("Skeleton", 130, 10);
 var hero = new Hero("Bernard", 130, 30);
+
+function heroAttack() {
+  document.getElementsByClassName("skill-block")[0].style.display = "none";
+
+  setTimeout(function() {
+    hero.element.classList.add("attacking"); // "" 內的是 class name!
+    setTimeout(function() {
+      hero.attack(monster);
+      hero.element.classList.remove("attacking");
+    }, 500);
+  }, 100);
+
+  setTimeout(function() {
+    if (monster.alive) {
+      monster.element.classList.add("attacking");
+      setTimeout(function() {
+        monster.attack(hero);
+        monster.element.classList.remove("attacking");
+        endTurn();
+        if (hero.alive == false) {
+          // 遊戲結束的 code
+        } else {
+          document.getElementsByClassName("skill-block")[0].style.display = "block";
+        }
+      }, 500);
+    } else {
+      // 遊戲結束 code
+    }
+  }, 1100);
+}
+
+function addSkillEvent() {
+  var skill = document.getElementById("skill");
+  skill.onclick = function() {
+    heroAttack();
+  }
+}
+addSkillEvent();
