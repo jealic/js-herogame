@@ -76,11 +76,30 @@ class Hero extends BaseCharacter {
   }
 
   getHeal(heal) {
-    this.hp += heal;
+    this.hp += 30;
+    
     if (this.hp > this.maxHp) {
       this.hp = this.maxHp;
     }
     this.updateHtml(this.hpElement, this.hurtElement);
+
+    var _this = this;
+    var i = 1;
+    _this.id = setInterval(function(){
+
+      if(i==1){
+        _this.element.getElementsByClassName("heal-text")[0].classList.add("healing");
+        _this.element.getElementsByClassName("heal-text")[0].textContent = "30";
+      };
+
+      i++;
+
+      if (i > 8) {
+        _this.element.getElementsByClassName("heal-text")[0].classList.remove("healing");
+        _this.element.getElementsByClassName("heal-text")[0].textContent = "";
+        clearInterval(_this.id);
+      }
+    },50);
   }
 }
 
@@ -108,7 +127,7 @@ class Monster extends BaseCharacter {
 
 var rounds = 10;
 var hero = new Hero("Bernard", 130, 40);
-var monster = new Monster("Skeleton", 130, 50);
+var monster = new Monster("Skeleton", 130, 40);
 
 function endTurn() {
   rounds--;
@@ -121,7 +140,7 @@ function endTurn() {
 function heroHealed() {
   document.getElementsByClassName("skill-block")[0].style.display = "none";
   setTimeout(function() {
-    hero.getHeal(30)
+    hero.getHeal()
   }, 250);
 
   setTimeout(function(){
