@@ -16,9 +16,31 @@
   getHurt(damage) {
     this.hp -= damage;
     if (this.hp <= 0) {
-      this.die()
+      this.die();
     }
+
+    var _this = this;
+    var i = 1;
+
+    _this.id = setInterval(function() {
+      if (i == 1) {
+        _this.element.getElementsByClassName("effect-image")[0].style.display = "block";
+        _this.element.getElementsByClassName("hurt-text")[0].classList.add("attacked");
+        _this.element.getElementsByClassName("hurt-text")[0].textContent = damage;
+      }
+
+      _this.element.getElementsByClassName("effect-image")[0].src = 'images/effect/blade/' + i + '.png';
+      i++;
+
+      if (i > 8) {
+        _this.element.getElementsByClassName("effect-image")[0].style.display = "none";
+        _this.element.getElementsByClassName("hurt-text")[0].classList.remove("attacked");
+        _this.element.getElementsByClassName("hurt-text")[0].textContent = "";
+        clearInterval(_this.id);
+      }
+    }, 50);
   }
+
   die() {
     this.alive = false;  //一個 '=' 是在設定
   }
@@ -77,21 +99,23 @@ class Monster extends BaseCharacter {
 }
 
 var rounds = 10;
+var hero = new Hero("Bernard", 130, 5);
+var monster = new Monster("Skeleton", 130, 5);
+
 function endTurn() {
   rounds--;
   document.getElementById("round-num").textContent = rounds;
   if (rounds < 1) {
-    // 遊戲結束
+    finish();
   }
 }
-var monster = new Monster("Skeleton", 130, 10);
-var hero = new Hero("Bernard", 130, 30);
 
 function heroAttack() {
+  // Hero 選技能時觸發回合開始
   document.getElementsByClassName("skill-block")[0].style.display = "none";
 
   setTimeout(function() {
-    hero.element.classList.add("attacking"); // "" 內的是 class name!
+    hero.element.classList.add("attacking");
     setTimeout(function() {
       hero.attack(monster);
       hero.element.classList.remove("attacking");
@@ -100,21 +124,22 @@ function heroAttack() {
 
   setTimeout(function() {
     if (monster.alive) {
-      monster.element.classList.add("attacking");
+      monster.element.classList.add("attacking")
       setTimeout(function() {
         monster.attack(hero);
         monster.element.classList.remove("attacking");
         endTurn();
         if (hero.alive == false) {
-          // 遊戲結束的 code
+          finish();
         } else {
           document.getElementsByClassName("skill-block")[0].style.display = "block";
         }
       }, 500);
     } else {
-      // 遊戲結束 code
+      finish();
     }
   }, 1100);
+
 }
 
 function addSkillEvent() {
@@ -124,3 +149,13 @@ function addSkillEvent() {
   }
 }
 addSkillEvent();
+
+function finish() {
+  var dialog = document.getElementById("dialog");
+  dialog.style.display = "block";
+  if (monster.alive == false) {
+    dialog.classList.add("win");
+  } else {
+    dialog.classList.add("lose");
+  }
+}
