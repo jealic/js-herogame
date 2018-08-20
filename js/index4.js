@@ -202,16 +202,24 @@ function addSkillEvent() {
   skill.onclick = function() {
     heroAttack();
   }
-}
-addSkillEvent();
 
-function addHealEvent() {
   var heal = document.getElementById("heal");
   heal.onclick = function() {
     heroHealed();
   }
+
+  document.onkeyup = function(event){
+    var key = String.fromCharCode(event.keyCode);
+    if (key == "A") {
+      heroAttack();
+    }
+    if (key == "D") {
+      heroHealed();
+    }
+  }
 }
-addHealEvent();
+addSkillEvent();
+
 
 function finish() {
   var dialog = document.getElementById("dialog");
@@ -222,3 +230,4 @@ function finish() {
     dialog.classList.add("lose");
   }
 }
+
